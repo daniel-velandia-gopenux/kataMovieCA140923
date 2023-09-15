@@ -2,20 +2,21 @@ package com.xurxodev.moviesandroidkata.domain.interactor.impl;
 
 import com.xurxodev.moviesandroidkata.domain.executor.Executor;
 import com.xurxodev.moviesandroidkata.domain.executor.MainThread;
+import com.xurxodev.moviesandroidkata.domain.interactor.MoviesInteractor;
 import com.xurxodev.moviesandroidkata.domain.interactor.base.AbstracInteractor;
 import com.xurxodev.moviesandroidkata.domain.model.Movie;
 import com.xurxodev.moviesandroidkata.domain.boundary.MovieRepository;
 
 import java.util.List;
 
-public class MoviesInteractor extends AbstracInteractor {
+public class MoviesInteractorImpl extends AbstracInteractor implements MoviesInteractor {
 
-    private callback callback;
+    private callback moviesPresenter;
     private MovieRepository movieRepository;
 
-    public MoviesInteractor(Executor threadExecutor, MainThread mainThread, callback callback, MovieRepository movieRepository) {
+    public MoviesInteractorImpl(Executor threadExecutor, MainThread mainThread, callback moviesPresenter, MovieRepository movieRepository) {
         super(threadExecutor, mainThread);
-        this.callback = callback;
+        this.moviesPresenter = moviesPresenter;
         this.movieRepository = movieRepository;
     }
 
@@ -23,7 +24,7 @@ public class MoviesInteractor extends AbstracInteractor {
         mainThread.post(new Runnable() {
             @Override
             public void run() {
-                callback.onRetrievalFailed("Error while read movies");
+                moviesPresenter.onRetrievalFailed("Error while read movies");
             }
         });
     }
@@ -32,7 +33,7 @@ public class MoviesInteractor extends AbstracInteractor {
         mainThread.post(new Runnable() {
             @Override
             public void run() {
-                callback.onMoviesRetrieved(movies);
+                moviesPresenter.onMoviesRetrieved(movies);
             }
         });
     }
@@ -49,10 +50,6 @@ public class MoviesInteractor extends AbstracInteractor {
         postMovies(movies);
     }
 
-    public interface callback {
 
-        void onMoviesRetrieved(List<Movie> movies);
-        void onRetrievalFailed(String error);
-    }
 
 }

@@ -12,7 +12,7 @@ import com.xurxodev.moviesandroidkata.MoviesApplication;
 import com.xurxodev.moviesandroidkata.R;
 import com.xurxodev.moviesandroidkata.databinding.FragmentMoviesBinding;
 import com.xurxodev.moviesandroidkata.domain.model.Movie;
-import com.xurxodev.moviesandroidkata.presentation.presenter.impl.MoviesPresenter;
+import com.xurxodev.moviesandroidkata.presentation.presenter.MoviesPresenter;
 import com.xurxodev.moviesandroidkata.presentation.ui.adapter.MoviesAdapter;
 
 import java.util.List;
@@ -41,16 +41,13 @@ public class MoviesFragment extends Fragment implements MoviesPresenter.callback
 
         binding = FragmentMoviesBinding.inflate(inflater, container, false);
 
-        initializeRefreshButton();
-        initializeAdapter();
-        initializeRecyclerView();
-
         moviesPresenter.onCreateView();
 
         return binding.getRoot();
     }
 
-    private void initializeRefreshButton() {
+    @Override
+    public void initializeRefreshButton() {
         binding.refreshButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -59,24 +56,26 @@ public class MoviesFragment extends Fragment implements MoviesPresenter.callback
         });
     }
 
-    private void initializeAdapter() {
+    @Override
+    public void initializeAdapter() {
         adapter = new MoviesAdapter();
     }
 
-    private void initializeRecyclerView() {
+    @Override
+    public void initializeRecyclerView() {
         binding.recyclerviewMovies.setAdapter(adapter);
-    }
-
-    private void refreshTitleWithMoviesCount(List<Movie> movies) {
-        String countText = getString(R.string.movies_count_text);
-
-        binding.moviesTitleTextView.setText(String.format(countText, movies.size()));
     }
 
     @Override
     public void loadedMovies(List<Movie> movies) {
         adapter.setMovies(movies);
         refreshTitleWithMoviesCount(movies);
+    }
+
+    private void refreshTitleWithMoviesCount(List<Movie> movies) {
+        String countText = getString(R.string.movies_count_text);
+
+        binding.moviesTitleTextView.setText(String.format(countText, movies.size()));
     }
 
     @Override

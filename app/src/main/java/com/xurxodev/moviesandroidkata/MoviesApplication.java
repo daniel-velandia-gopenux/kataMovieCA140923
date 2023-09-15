@@ -2,7 +2,7 @@ package com.xurxodev.moviesandroidkata;
 
 import android.app.Application;
 
-import com.xurxodev.moviesandroidkata.ui.di.component.DaggerMoviesComponent;
+import com.xurxodev.moviesandroidkata.presentation.ui.di.component.DaggerMoviesComponent;
 import com.xurxodev.moviesandroidkata.presentation.ui.di.component.MoviesComponent;
 
 public class MoviesApplication extends Application {

@@ -5,12 +5,14 @@ import android.os.Looper;
 
 import com.xurxodev.moviesandroidkata.domain.executor.MainThread;
 
+import javax.inject.Inject;
+
 public class MainThreadImpl implements MainThread {
 
-    private static MainThread mainThread;
     private Handler handler;
 
-    private MainThreadImpl() {
+    @Inject
+    public MainThreadImpl() {
         this.handler = new Handler(Looper.getMainLooper());
     }
 
@@ -19,11 +21,4 @@ public class MainThreadImpl implements MainThread {
         handler.post(runnable);
     }
 
-    public static MainThread getInstance() {
-        if(mainThread == null) {
-            mainThread = new MainThreadImpl();
-        }
-
-        return mainThread;
-    }
 }

@@ -32,6 +32,7 @@ public abstract class AbstracInteractor implements Interactor{
         mIsRunning = false;
     }
 
+    @Override
     public void execute() {
 
         mIsRunning = true;
