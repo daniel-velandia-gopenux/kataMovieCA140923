@@ -1,22 +1,41 @@
 package com.xurxodev.moviesandroidkata.presentation.presenter;
 
+import com.xurxodev.moviesandroidkata.domain.useCase.GetMoviesUseCase;
 import com.xurxodev.moviesandroidkata.domain.model.Movie;
-import com.xurxodev.moviesandroidkata.presentation.presenter.base.Presenter;
 
 import java.util.List;
 
-public interface MoviesPresenter extends Presenter {
+import javax.inject.Inject;
 
-    void onRefreshMovies();
+public class MoviesPresenter implements GetMoviesUseCase.Callback {
 
-    interface callback {
+    private Callback moviesFragment;
 
-        void initializeRefreshButton();
-        void initializeAdapter();
-        void initializeRecyclerView();
+    @Inject
+    public MoviesPresenter(Callback moviesFragment) {
+        this.moviesFragment = moviesFragment;
+    }
+
+    @Override
+    public void onMoviesLoading() {
+        moviesFragment.loadingMovies();
+    }
+
+    @Override
+    public void onMoviesRetrieved(List<Movie> movies) {
+        moviesFragment.loadedMovies(movies);
+    }
+
+    @Override
+    public void onRetrievalFailed(String error) {
+        moviesFragment.showError(error);
+    }
+
+    public interface Callback {
 
         void loadingMovies();
         void loadedMovies(List<Movie> movies);
         void showError(String error);
     }
+
 }

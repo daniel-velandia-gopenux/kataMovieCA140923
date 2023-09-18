@@ -1,14 +1,11 @@
-package com.xurxodev.moviesandroidkata.presentation.ui.di.subComponent;
+package com.xurxodev.moviesandroidkata.presentation.ui.di.subComponent.moviesSubComponent;
 
-import com.xurxodev.moviesandroidkata.presentation.ui.di.scope.MoviesScope;
 import com.xurxodev.moviesandroidkata.presentation.ui.fragment.MoviesFragment;
 
 import dagger.BindsInstance;
 import dagger.Subcomponent;
 
-
-@MoviesScope
-@Subcomponent(modules = {MoviesModule.class, PicassoModule.class})
+@Subcomponent(modules = {MoviesModule.class})
 public interface MoviesSubComponent {
     void inject(MoviesFragment moviesFragment);
 

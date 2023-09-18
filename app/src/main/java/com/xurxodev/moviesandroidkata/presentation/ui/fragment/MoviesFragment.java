@@ -12,19 +12,22 @@ import com.xurxodev.moviesandroidkata.MoviesApplication;
 import com.xurxodev.moviesandroidkata.R;
 import com.xurxodev.moviesandroidkata.databinding.FragmentMoviesBinding;
 import com.xurxodev.moviesandroidkata.domain.model.Movie;
+import com.xurxodev.moviesandroidkata.presentation.controller.MoviesController;
 import com.xurxodev.moviesandroidkata.presentation.presenter.MoviesPresenter;
+import com.xurxodev.moviesandroidkata.presentation.ui.activity.MoviesActivity;
 import com.xurxodev.moviesandroidkata.presentation.ui.adapter.MoviesAdapter;
+import com.xurxodev.moviesandroidkata.presentation.ui.event.OnClickItem;
 
 import java.util.List;
 
 import javax.inject.Inject;
 
-public class MoviesFragment extends Fragment implements MoviesPresenter.callback {
+public class MoviesFragment extends Fragment implements MoviesPresenter.Callback {
 
     private MoviesAdapter adapter;
     private FragmentMoviesBinding binding;
     @Inject
-    MoviesPresenter moviesPresenter;
+    MoviesController moviesController;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -41,27 +44,38 @@ public class MoviesFragment extends Fragment implements MoviesPresenter.callback
 
         binding = FragmentMoviesBinding.inflate(inflater, container, false);
 
-        moviesPresenter.onCreateView();
+        initializeRefreshButton();
+        initializeAdapter();
+        initializeRecyclerView();
+
+        moviesController.executeUseCase();
 
         return binding.getRoot();
     }
 
-    @Override
     public void initializeRefreshButton() {
         binding.refreshButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                moviesPresenter.onRefreshMovies();
+                moviesController.executeUseCase();
             }
         });
     }
 
-    @Override
     public void initializeAdapter() {
-        adapter = new MoviesAdapter();
+        adapter = new MoviesAdapter(new OnClickItem() {
+            @Override
+            public void onClick(int position) {
+                goToDetailFragment(position);
+            }
+        });
     }
 
-    @Override
+    private void goToDetailFragment(int position) {
+        MoviesActivity moviesActivity = ((MoviesActivity) getActivity());
+        moviesActivity.goToDetailFragment(position);
+    }
+
     public void initializeRecyclerView() {
         binding.recyclerviewMovies.setAdapter(adapter);
     }
@@ -69,13 +83,13 @@ public class MoviesFragment extends Fragment implements MoviesPresenter.callback
     @Override
     public void loadedMovies(List<Movie> movies) {
         adapter.setMovies(movies);
-        refreshTitleWithMoviesCount(movies);
+        refreshTitleWithMoviesCount(movies.size());
     }
 
-    private void refreshTitleWithMoviesCount(List<Movie> movies) {
+    private void refreshTitleWithMoviesCount(int size) {
         String countText = getString(R.string.movies_count_text);
 
-        binding.moviesTitleTextView.setText(String.format(countText, movies.size()));
+        binding.moviesTitleTextView.setText(String.format(countText, size));
     }
 
     @Override

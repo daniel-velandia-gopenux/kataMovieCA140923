@@ -5,8 +5,8 @@ import android.content.Context;
 
 import com.google.gson.Gson;
 import com.xurxodev.moviesandroidkata.R;
-import com.xurxodev.moviesandroidkata.domain.model.Movie;
 import com.xurxodev.moviesandroidkata.domain.boundary.MovieRepository;
+import com.xurxodev.moviesandroidkata.domain.entity.MovieEntity;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,23 +29,32 @@ public class MovieRepositoryImpl implements MovieRepository {
     }
 
     @Override
-    public List<Movie> getMovies() {
+    public List<MovieEntity> getMovies() {
 
-        Movie[] movies = transformGson();
+        MovieEntity[] movieEntities = transformGson();
 
         simulateDelay();
 
-        return Arrays.asList(movies);
+        return Arrays.asList(movieEntities);
     }
 
-    private Movie[] transformGson() {
+    @Override
+    public MovieEntity getMovie(int position) {
+        MovieEntity[] movieEntities = transformGson();
+
+        simulateDelay();
+
+        return movieEntities[position];
+    }
+
+    private MovieEntity[] transformGson() {
         try {
             String jsonString = getJsonString();
-            return gson.fromJson(jsonString, Movie[].class);
+            return gson.fromJson(jsonString, MovieEntity[].class);
         } catch (IOException e){
             Timber.tag("error while read file").e(e);
         }
-        return new Movie[0];
+        return new MovieEntity[0];
     }
 
     private String getJsonString() throws IOException {
