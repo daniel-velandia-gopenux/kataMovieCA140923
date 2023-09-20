@@ -11,74 +11,51 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public class GetMoviesUseCase {
+import dagger.Lazy;
 
-    private Callback moviesPresenter;
-    private MovieRepository movieRepository;
+public class GetMoviesUseCase implements Runnable {
+
     private MainThread mainHandler;
     private Executor backgroundExecutor;
 
+    private Lazy<Callback> callback;
+    private MovieRepository movieRepository;
+
     @Inject
-    public GetMoviesUseCase(Callback moviesPresenter, MovieRepository movieRepository, MainThread mainHandler,
-                            Executor backgroundExecutor) {
-        this.moviesPresenter = moviesPresenter;
-        this.movieRepository = movieRepository;
+    public GetMoviesUseCase(MainThread mainHandler, Executor backgroundExecutor,
+                            Lazy<Callback> callback, MovieRepository movieRepository) {
         this.mainHandler = mainHandler;
         this.backgroundExecutor = backgroundExecutor;
+        this.callback = callback;
+        this.movieRepository = movieRepository;
     }
 
     public void execute() {
-        backgroundExecutor.execute(new Runnable() {
-            @Override
-            public void run() {
-                loading();
+        backgroundExecutor.execute(this);
+    }
 
-                List<MovieEntity> movieEntities = movieRepository.getMovies();
+    @Override
+    public void run() {
 
-                if(movieEntities == null || movieEntities.size() == 0) {
-                    notifyError("error while read movies");
-                    return;
-                }
+        List<MovieEntity> movieEntities = movieRepository.getMovies();
 
-                List<Movie> movies = MovieMapper.mapper(movieEntities);
+        List<Movie> movies = MovieMapper.mapper(movieEntities);
 
-                postMovies(movies);
-            }
-        });
+        moviesLoaded(movies);
 
     }
 
-    private void loading() {
+    private void moviesLoaded(List<Movie> movies) {
         mainHandler.execute(new Runnable() {
             @Override
             public void run() {
-                moviesPresenter.onMoviesLoading();
-            }
-        });
-    }
-
-    private void notifyError(String error) {
-        mainHandler.execute(new Runnable() {
-            @Override
-            public void run() {
-                moviesPresenter.onRetrievalFailed(error);
-            }
-        });
-    }
-
-    private void postMovies(List<Movie> movies) {
-        mainHandler.execute(new Runnable() {
-            @Override
-            public void run() {
-                moviesPresenter.onMoviesRetrieved(movies);
+                callback.get().onMoviesLoaded(movies);
             }
         });
     }
 
     public interface Callback {
 
-        void onMoviesLoading();
-        void onMoviesRetrieved(List<Movie> movies);
-        void onRetrievalFailed(String message);
+        void onMoviesLoaded(List<Movie> movies);
     }
 }

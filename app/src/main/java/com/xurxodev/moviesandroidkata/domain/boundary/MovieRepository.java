@@ -7,5 +7,4 @@ import java.util.List;
 public interface MovieRepository {
 
     List<MovieEntity> getMovies();
-    MovieEntity getMovie(int position);
 }

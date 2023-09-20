@@ -1,7 +1,7 @@
 package com.xurxodev.moviesandroidkata.presentation.presenter;
 
-import com.xurxodev.moviesandroidkata.domain.useCase.GetMoviesUseCase;
 import com.xurxodev.moviesandroidkata.domain.model.Movie;
+import com.xurxodev.moviesandroidkata.domain.useCase.GetMoviesUseCase;
 
 import java.util.List;
 
@@ -9,33 +9,29 @@ import javax.inject.Inject;
 
 public class MoviesPresenter implements GetMoviesUseCase.Callback {
 
-    private Callback moviesFragment;
+    private GetMoviesUseCase getMoviesUseCase;
+    private View moviesFragment;
 
     @Inject
-    public MoviesPresenter(Callback moviesFragment) {
+    public MoviesPresenter(GetMoviesUseCase getMoviesUseCase, View moviesFragment) {
+        this.getMoviesUseCase = getMoviesUseCase;
         this.moviesFragment = moviesFragment;
     }
 
-    @Override
-    public void onMoviesLoading() {
+    public void getMovies() {
         moviesFragment.loadingMovies();
+        getMoviesUseCase.execute();
     }
 
     @Override
-    public void onMoviesRetrieved(List<Movie> movies) {
+    public void onMoviesLoaded(List<Movie> movies) {
         moviesFragment.loadedMovies(movies);
     }
 
-    @Override
-    public void onRetrievalFailed(String error) {
-        moviesFragment.showError(error);
-    }
-
-    public interface Callback {
+    public interface View {
 
         void loadingMovies();
-        void loadedMovies(List<Movie> movies);
-        void showError(String error);
-    }
 
+        void loadedMovies(List<Movie> movies);
+    }
 }

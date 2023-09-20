@@ -4,10 +4,9 @@ import com.xurxodev.moviesandroidkata.domain.executor.Executor;
 import com.xurxodev.moviesandroidkata.domain.executor.MainThread;
 import com.xurxodev.moviesandroidkata.domain.boundary.MovieRepository;
 import com.xurxodev.moviesandroidkata.domain.useCase.GetMoviesUseCase;
-import com.xurxodev.moviesandroidkata.presentation.controller.MoviesController;
 import com.xurxodev.moviesandroidkata.presentation.presenter.MoviesPresenter;
-import com.xurxodev.moviesandroidkata.presentation.ui.fragment.MoviesFragment;
 
+import dagger.Lazy;
 import dagger.Module;
 import dagger.Provides;
 
@@ -15,25 +14,22 @@ import dagger.Provides;
 public class MoviesModule {
 
     @Provides
-    MoviesPresenter providesMoviesPresenter(MoviesFragment moviesFragment) {
-        return new MoviesPresenter(moviesFragment);
+    MoviesPresenter providesMoviesPresenter(GetMoviesUseCase getMoviesUseCase,
+                                            MoviesPresenter.View moviesFragment) {
+        return new MoviesPresenter(getMoviesUseCase, moviesFragment);
     }
 
     @Provides
-    GetMoviesUseCase.Callback providesMoviesPresenterCallback(MoviesFragment moviesFragment) {
-        return new MoviesPresenter(moviesFragment);
+    GetMoviesUseCase.Callback providesMoviesPresenterCallback(GetMoviesUseCase getMoviesUseCase,
+                                                              MoviesPresenter.View moviesFragment) {
+        return new MoviesPresenter(getMoviesUseCase, moviesFragment);
     }
 
     @Provides
-    GetMoviesUseCase providesGetMoviesUseCase(GetMoviesUseCase.Callback moviesPresenter,
-                                              MovieRepository movieRepository, MainThread mainThread,
-                                              Executor backgroundExecutor) {
-        return new GetMoviesUseCase(moviesPresenter, movieRepository, mainThread, backgroundExecutor);
-    }
-
-    @Provides
-    MoviesController providesMoviesController(GetMoviesUseCase getMoviesUseCase) {
-        return new MoviesController(getMoviesUseCase);
+    GetMoviesUseCase providesGetMoviesUseCase(MovieRepository movieRepository, MainThread mainThread,
+                                              Executor backgroundExecutor,
+                                              Lazy<GetMoviesUseCase.Callback> callback) {
+        return new GetMoviesUseCase(mainThread, backgroundExecutor, callback, movieRepository);
     }
 
 }

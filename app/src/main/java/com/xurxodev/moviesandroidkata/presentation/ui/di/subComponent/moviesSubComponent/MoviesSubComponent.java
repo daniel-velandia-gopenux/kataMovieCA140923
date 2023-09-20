@@ -1,5 +1,6 @@
 package com.xurxodev.moviesandroidkata.presentation.ui.di.subComponent.moviesSubComponent;
 
+import com.xurxodev.moviesandroidkata.presentation.presenter.MoviesPresenter;
 import com.xurxodev.moviesandroidkata.presentation.ui.fragment.MoviesFragment;
 
 import dagger.BindsInstance;
@@ -11,6 +12,6 @@ public interface MoviesSubComponent {
 
     @Subcomponent.Factory
     interface Factory {
-        MoviesSubComponent create(@BindsInstance MoviesFragment moviesFragment);
+        MoviesSubComponent create(@BindsInstance MoviesPresenter.View moviesFragment);
     }
 }

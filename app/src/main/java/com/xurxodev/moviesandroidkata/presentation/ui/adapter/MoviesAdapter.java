@@ -2,13 +2,11 @@ package com.xurxodev.moviesandroidkata.presentation.ui.adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import com.squareup.picasso.Picasso;
 import com.xurxodev.moviesandroidkata.databinding.ItemMoviesBinding;
 import com.xurxodev.moviesandroidkata.domain.model.Movie;
-import com.xurxodev.moviesandroidkata.presentation.ui.event.OnClickItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,13 +17,9 @@ public class MoviesAdapter
         extends RecyclerView.Adapter<MoviesAdapter.ViewHolder> {
 
     private List<Movie> movies = new ArrayList<>();
-    private OnClickItem onClickItem;
     @Inject
     protected Picasso picasso;
 
-    public MoviesAdapter(OnClickItem onClickItem) {
-        this.onClickItem = onClickItem;
-    }
 
     public void setMovies(List<Movie> movies) {
         this.movies = movies;
@@ -71,12 +65,6 @@ public class MoviesAdapter
 
             binding.itemMovieTitle.setText(movieItem.getTitle());
 
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    onClickItem.onClick(getAdapterPosition());
-                }
-            });
         }
     }
 }

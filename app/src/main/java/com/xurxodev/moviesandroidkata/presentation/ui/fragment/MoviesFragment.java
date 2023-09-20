@@ -6,36 +6,36 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.xurxodev.moviesandroidkata.MoviesApplication;
 import com.xurxodev.moviesandroidkata.R;
 import com.xurxodev.moviesandroidkata.databinding.FragmentMoviesBinding;
 import com.xurxodev.moviesandroidkata.domain.model.Movie;
-import com.xurxodev.moviesandroidkata.presentation.controller.MoviesController;
 import com.xurxodev.moviesandroidkata.presentation.presenter.MoviesPresenter;
-import com.xurxodev.moviesandroidkata.presentation.ui.activity.MoviesActivity;
 import com.xurxodev.moviesandroidkata.presentation.ui.adapter.MoviesAdapter;
-import com.xurxodev.moviesandroidkata.presentation.ui.event.OnClickItem;
 
 import java.util.List;
 
 import javax.inject.Inject;
 
-public class MoviesFragment extends Fragment implements MoviesPresenter.Callback {
+public class MoviesFragment extends Fragment implements MoviesPresenter.View {
 
     private MoviesAdapter adapter;
     private FragmentMoviesBinding binding;
     @Inject
-    MoviesController moviesController;
+    MoviesPresenter moviesPresenter;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        initializeComponent();
+
+    }
+
+    private void initializeComponent() {
         ((MoviesApplication) getActivity().getApplication()).getMoviesComponent()
                 .getMovieSubComponent().create(this).inject(this);
-
     }
 
     @Override
@@ -48,7 +48,7 @@ public class MoviesFragment extends Fragment implements MoviesPresenter.Callback
         initializeAdapter();
         initializeRecyclerView();
 
-        moviesController.executeUseCase();
+        moviesPresenter.getMovies();
 
         return binding.getRoot();
     }
@@ -57,23 +57,13 @@ public class MoviesFragment extends Fragment implements MoviesPresenter.Callback
         binding.refreshButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                moviesController.executeUseCase();
+                moviesPresenter.getMovies();
             }
         });
     }
 
     public void initializeAdapter() {
-        adapter = new MoviesAdapter(new OnClickItem() {
-            @Override
-            public void onClick(int position) {
-                goToDetailFragment(position);
-            }
-        });
-    }
-
-    private void goToDetailFragment(int position) {
-        MoviesActivity moviesActivity = ((MoviesActivity) getActivity());
-        moviesActivity.goToDetailFragment(position);
+        adapter = new MoviesAdapter();
     }
 
     public void initializeRecyclerView() {
@@ -96,10 +86,5 @@ public class MoviesFragment extends Fragment implements MoviesPresenter.Callback
     public void loadingMovies() {
         adapter.clearMovies();
         binding.moviesTitleTextView.setText(R.string.loading_movies_text);
-    }
-
-    @Override
-    public void showError(String error) {
-        Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
     }
 }

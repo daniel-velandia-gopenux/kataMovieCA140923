@@ -3,7 +3,6 @@ package com.xurxodev.moviesandroidkata.presentation.ui.di.component;
 import android.app.Application;
 
 import com.xurxodev.moviesandroidkata.presentation.ui.di.SubComponents;
-import com.xurxodev.moviesandroidkata.presentation.ui.di.subComponent.movieDetailSubComponent.MovieDetailSubComponent;
 import com.xurxodev.moviesandroidkata.presentation.ui.di.subComponent.moviesSubComponent.MoviesSubComponent;
 
 import javax.inject.Singleton;
@@ -16,8 +15,6 @@ import dagger.Component;
 public interface MoviesComponent {
 
     MoviesSubComponent.Factory getMovieSubComponent();
-
-    MovieDetailSubComponent.Factory getMovieDetailSubComponent();
 
     @Component.Factory
     interface Factory {
