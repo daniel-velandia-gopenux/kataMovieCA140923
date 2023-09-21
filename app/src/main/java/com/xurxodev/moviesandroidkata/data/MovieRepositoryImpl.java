@@ -38,6 +38,15 @@ public class MovieRepositoryImpl implements MovieRepository {
         return Arrays.asList(movieEntities);
     }
 
+    @Override
+    public MovieEntity getMovie(int position) {
+        MovieEntity[] movieEntities = transformGson();
+
+        simulateDelay();
+
+        return movieEntities[position];
+    }
+
     private MovieEntity[] transformGson() {
         try {
             String jsonString = getJsonString();

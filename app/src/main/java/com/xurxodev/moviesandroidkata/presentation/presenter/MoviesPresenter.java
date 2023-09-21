@@ -7,7 +7,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public class MoviesPresenter implements GetMoviesUseCase.Callback {
+public class MoviesPresenter {
 
     private GetMoviesUseCase getMoviesUseCase;
     private View moviesFragment;
@@ -20,12 +20,13 @@ public class MoviesPresenter implements GetMoviesUseCase.Callback {
 
     public void getMovies() {
         moviesFragment.loadingMovies();
-        getMoviesUseCase.execute();
-    }
+        getMoviesUseCase.execute(new GetMoviesUseCase.Callback() {
 
-    @Override
-    public void onMoviesLoaded(List<Movie> movies) {
-        moviesFragment.loadedMovies(movies);
+            @Override
+            public void onMoviesLoaded(List<Movie> movies) {
+                moviesFragment.loadedMovies(movies);
+            }
+        });
     }
 
     public interface View {

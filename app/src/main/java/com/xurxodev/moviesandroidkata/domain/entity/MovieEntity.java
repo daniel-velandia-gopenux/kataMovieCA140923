@@ -22,4 +22,5 @@ public class MovieEntity {
     public String getDescription() {
         return description;
     }
+
 }

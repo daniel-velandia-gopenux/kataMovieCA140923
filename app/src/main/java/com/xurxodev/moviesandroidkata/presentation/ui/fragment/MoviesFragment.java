@@ -12,7 +12,9 @@ import com.xurxodev.moviesandroidkata.R;
 import com.xurxodev.moviesandroidkata.databinding.FragmentMoviesBinding;
 import com.xurxodev.moviesandroidkata.domain.model.Movie;
 import com.xurxodev.moviesandroidkata.presentation.presenter.MoviesPresenter;
+import com.xurxodev.moviesandroidkata.presentation.ui.activity.MoviesActivity;
 import com.xurxodev.moviesandroidkata.presentation.ui.adapter.MoviesAdapter;
+import com.xurxodev.moviesandroidkata.presentation.ui.event.OnClickItemListener;
 
 import java.util.List;
 
@@ -34,8 +36,11 @@ public class MoviesFragment extends Fragment implements MoviesPresenter.View {
     }
 
     private void initializeComponent() {
-        ((MoviesApplication) getActivity().getApplication()).getMoviesComponent()
-                .getMovieSubComponent().create(this).inject(this);
+        MoviesApplication moviesApplication = (MoviesApplication) getActivity().getApplication();
+        moviesApplication.getMoviesComponent()
+                .getMoviesSubComponent()
+                .create(this)
+                .inject(this);
     }
 
     @Override
@@ -63,7 +68,13 @@ public class MoviesFragment extends Fragment implements MoviesPresenter.View {
     }
 
     public void initializeAdapter() {
-        adapter = new MoviesAdapter();
+        adapter = new MoviesAdapter(new OnClickItemListener() {
+            @Override
+            public void onClick(int position) {
+                MoviesActivity moviesActivity = ((MoviesActivity) getActivity());
+                moviesActivity.navigateToDetailFragment(position);
+            }
+        });
     }
 
     public void initializeRecyclerView() {

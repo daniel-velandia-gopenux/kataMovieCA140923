@@ -11,26 +11,24 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import dagger.Lazy;
-
 public class GetMoviesUseCase implements Runnable {
 
     private MainThread mainHandler;
     private Executor backgroundExecutor;
 
-    private Lazy<Callback> callback;
+    private Callback callback;
     private MovieRepository movieRepository;
 
     @Inject
     public GetMoviesUseCase(MainThread mainHandler, Executor backgroundExecutor,
-                            Lazy<Callback> callback, MovieRepository movieRepository) {
+                            MovieRepository movieRepository) {
         this.mainHandler = mainHandler;
         this.backgroundExecutor = backgroundExecutor;
-        this.callback = callback;
         this.movieRepository = movieRepository;
     }
 
-    public void execute() {
+    public void execute(Callback callback) {
+        this.callback = callback;
         backgroundExecutor.execute(this);
     }
 
@@ -49,7 +47,7 @@ public class GetMoviesUseCase implements Runnable {
         mainHandler.execute(new Runnable() {
             @Override
             public void run() {
-                callback.get().onMoviesLoaded(movies);
+                callback.onMoviesLoaded(movies);
             }
         });
     }
