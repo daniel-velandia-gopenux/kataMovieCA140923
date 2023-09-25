@@ -17,8 +17,8 @@ import javax.inject.Inject;
 
 public class MovieDetailFragment extends Fragment implements MovieDetailPresenter.View {
 
-    private static final String ARG_POSITION = "position";
-    private int position;
+    private static final String ARG_MOVIE = "movie";
+    private Movie movie;
     private FragmentMovieDetailBinding binding;
 
     @Inject
@@ -30,10 +30,10 @@ public class MovieDetailFragment extends Fragment implements MovieDetailPresente
 
     }
 
-    public static MovieDetailFragment newInstance(int position) {
+    public static MovieDetailFragment newInstance(Movie movie) {
         MovieDetailFragment fragment = new MovieDetailFragment();
         Bundle args = new Bundle();
-        args.putInt(ARG_POSITION, position);
+        args.putSerializable(ARG_MOVIE, movie);
         fragment.setArguments(args);
         return fragment;
     }
@@ -42,7 +42,7 @@ public class MovieDetailFragment extends Fragment implements MovieDetailPresente
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            position = getArguments().getInt(ARG_POSITION);
+            movie = (Movie) getArguments().getSerializable(ARG_MOVIE);
         }
         initializeComponent();
     }
@@ -60,7 +60,7 @@ public class MovieDetailFragment extends Fragment implements MovieDetailPresente
                              Bundle savedInstanceState) {
         binding = FragmentMovieDetailBinding.inflate(inflater, container, false);
 
-        movieDetailPresenter.getMovie(position);
+        movieDetailPresenter.showMovie(movie);
 
         return binding.getRoot();
     }

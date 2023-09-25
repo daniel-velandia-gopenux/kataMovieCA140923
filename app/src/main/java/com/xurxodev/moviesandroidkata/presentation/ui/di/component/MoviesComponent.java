@@ -12,7 +12,8 @@ import dagger.BindsInstance;
 import dagger.Component;
 
 @Singleton
-@Component(modules={DataModule.class, NetModule.class, PicassoModule.class, ThreadModule.class, SubComponents.class})
+@Component(modules={DataModule.class, NetModule.class, PicassoModule.class, ThreadModule.class,
+        SubComponents.class})
 public interface MoviesComponent {
 
     MoviesSubComponent.Factory getMoviesSubComponent();

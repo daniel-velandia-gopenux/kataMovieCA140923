@@ -74,7 +74,7 @@ public class MoviesAdapter
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    onClickItemListener.onClick(getAdapterPosition());
+                    onClickItemListener.onClick(movieItem);
                 }
             });
         }

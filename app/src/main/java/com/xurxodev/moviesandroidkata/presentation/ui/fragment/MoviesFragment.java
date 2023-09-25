@@ -32,14 +32,13 @@ public class MoviesFragment extends Fragment implements MoviesPresenter.View {
         super.onCreate(savedInstanceState);
 
         initializeComponent();
-
     }
 
     private void initializeComponent() {
         MoviesApplication moviesApplication = (MoviesApplication) getActivity().getApplication();
         moviesApplication.getMoviesComponent()
                 .getMoviesSubComponent()
-                .create(this)
+                .create(this, (MoviesActivity) getActivity())
                 .inject(this);
     }
 
@@ -49,15 +48,13 @@ public class MoviesFragment extends Fragment implements MoviesPresenter.View {
 
         binding = FragmentMoviesBinding.inflate(inflater, container, false);
 
-        initializeRefreshButton();
-        initializeAdapter();
-        initializeRecyclerView();
-
+        moviesPresenter.initializeElements();
         moviesPresenter.getMovies();
 
         return binding.getRoot();
     }
 
+    @Override
     public void initializeRefreshButton() {
         binding.refreshButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,16 +64,17 @@ public class MoviesFragment extends Fragment implements MoviesPresenter.View {
         });
     }
 
+    @Override
     public void initializeAdapter() {
         adapter = new MoviesAdapter(new OnClickItemListener() {
             @Override
-            public void onClick(int position) {
-                MoviesActivity moviesActivity = ((MoviesActivity) getActivity());
-                moviesActivity.navigateToDetailFragment(position);
+            public void onClick(Movie movie) {
+                moviesPresenter.navigateToDetail(movie);
             }
         });
     }
 
+    @Override
     public void initializeRecyclerView() {
         binding.recyclerviewMovies.setAdapter(adapter);
     }

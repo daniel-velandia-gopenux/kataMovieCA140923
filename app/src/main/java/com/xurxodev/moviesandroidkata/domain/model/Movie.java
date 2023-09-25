@@ -1,6 +1,8 @@
 package com.xurxodev.moviesandroidkata.domain.model;
 
-public class Movie {
+import java.io.Serializable;
+
+public class Movie implements Serializable {
     private String image;
     private String title;
     private String description;
