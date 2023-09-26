@@ -4,8 +4,9 @@ import com.xurxodev.moviesandroidkata.domain.executor.Executor;
 import com.xurxodev.moviesandroidkata.domain.executor.MainThread;
 import com.xurxodev.moviesandroidkata.domain.boundary.MovieRepository;
 import com.xurxodev.moviesandroidkata.domain.useCase.GetMoviesUseCase;
-import com.xurxodev.moviesandroidkata.presentation.navigation.Navigator;
+import com.xurxodev.moviesandroidkata.presentation.navigation.NavigatorImpl;
 import com.xurxodev.moviesandroidkata.presentation.presenter.MoviesPresenter;
+import com.xurxodev.moviesandroidkata.presentation.presenter.boundary.Navigator;
 import com.xurxodev.moviesandroidkata.presentation.ui.activity.MoviesActivity;
 
 import dagger.Module;
@@ -29,7 +30,7 @@ public class MoviesModule {
 
     @Provides
     Navigator providesNavigator(MoviesActivity moviesActivity) {
-        return new Navigator(moviesActivity);
+        return new NavigatorImpl(moviesActivity);
     }
 
 }
